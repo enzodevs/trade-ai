@@ -44,10 +44,18 @@ export default function Home() {
 
           {/* Coluna 2: Iframe da Broker */}
           <div className="w-full max-w-md mx-auto">
-            <iframe
-              src="https://avalonbroker.com/"
-              className="w-full h-[600px] border rounded-md"
-            />
+          <iframe
+            src="https://avalonbroker.com/"
+            className="
+              w-full 
+              border 
+              rounded-md
+              h-[600px]          /* padrão desktop */
+              md:h-[600px]       /* mantém 600px em telas md e acima */
+              sm:h-[500px]       /* em telas pequenas (sm), 500px */
+              xs:h-[450px]       /* em telas bem pequenas (opcional) */
+            "
+          />
           </div>
         </section>
       </main>

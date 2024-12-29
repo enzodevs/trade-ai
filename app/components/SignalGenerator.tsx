@@ -70,9 +70,12 @@ export default function SignalGenerator() {
   // DADOS DO SINAL
   const [currentAsset, setCurrentAsset] = useState("");
   const [winRate, setWinRate] = useState(0);
-  const [executionTime, setExecutionTime] = useState(""); // HH:mm
+  const [executionTime, setExecutionTime] = useState(""); // "HH:mm"
   const [showSignal, setShowSignal] = useState(false);
   const [operationType, setOperationType] = useState<"call" | "sell">("call");
+
+  // Horário em que a operação acaba (em timestamp Unix)
+  const [operationEndTime, setOperationEndTime] = useState<number | null>(null);
 
   // TEXTO DE LOADING
   const [loadingText, setLoadingText] = useState("Identificando o ativo...");
@@ -93,17 +96,19 @@ export default function SignalGenerator() {
   useEffect(() => {
     const storedNextSignal = localStorage.getItem("nextSignalTime");
     const storedSignalData = localStorage.getItem("signalData");
+    const storedEndTime = localStorage.getItem("operationEndTime");
 
+    // Restaura freeze
     if (storedNextSignal) {
       const nextSignalTimestamp = parseInt(storedNextSignal, 10);
       const nowSec = Math.floor(Date.now() / 1000);
-
       if (nextSignalTimestamp > nowSec) {
         setCanGenerate(false);
         setFreezeCounter(nextSignalTimestamp - nowSec);
       }
     }
 
+    // Restaura dados do sinal, se houver
     if (storedSignalData) {
       const { asset, winRate, executionTime, operation } = JSON.parse(storedSignalData);
       setCurrentAsset(asset);
@@ -111,6 +116,11 @@ export default function SignalGenerator() {
       setExecutionTime(executionTime);
       setOperationType(operation || "call");
       setShowSignal(true);
+    }
+
+    // Restaura endTime da operação
+    if (storedEndTime) {
+      setOperationEndTime(parseInt(storedEndTime, 10));
     }
   }, []);
 
@@ -132,6 +142,27 @@ export default function SignalGenerator() {
       if (interval) clearInterval(interval);
     };
   }, [freezeCounter, canGenerate]);
+
+  /**
+   * Verifica se a operação acabou. 
+   * Se sim, limpa o sinal.
+   */
+  useEffect(() => {
+    const checkOperationEnd = setInterval(() => {
+      if (operationEndTime) {
+        const nowSec = Math.floor(Date.now() / 1000);
+        if (nowSec >= operationEndTime) {
+          // Operação acabou, limpa sinal
+          setShowSignal(false);
+          setOperationEndTime(null);
+          localStorage.removeItem("operationEndTime");
+          localStorage.removeItem("signalData");
+        }
+      }
+    }, 1000);
+
+    return () => clearInterval(checkOperationEnd);
+  }, [operationEndTime]);
 
   /**
    * Gera um novo sinal.
@@ -178,7 +209,14 @@ export default function SignalGenerator() {
       setCanGenerate(false);
       setFreezeCounter(freezeSeconds);
 
-      // 6. Salva no storage
+      // 6. Define endTime da operação (opTime + 5 min)
+      // opTime + 5min = nextSignalTimestamp
+      // mas note que opTimeStr é quando ENTRA. A operação acaba 5 min DEPOIS disso => opTime + 5
+      // Então, operationEndTime = nextSignalTimestamp
+      setOperationEndTime(nextSignalTimestamp);
+      localStorage.setItem("operationEndTime", nextSignalTimestamp.toString());
+
+      // 7. Salva no storage
       localStorage.setItem(
         "signalData",
         JSON.stringify({
@@ -189,7 +227,7 @@ export default function SignalGenerator() {
         })
       );
 
-      // 7. Finaliza loading
+      // 8. Finaliza loading
       setIsGenerating(false);
       setShowSignal(true);
 
@@ -212,7 +250,8 @@ export default function SignalGenerator() {
   );
 
   return (
-    <div className="flex flex-col items-center justify-center w-full relative overflow-hidden min-h-[600px]">
+    // Removi min-h-[600px] e deixei auto. Assim, se não há sinal, o card fica menor.
+    <div className="flex flex-col items-center justify-center w-full relative overflow-hidden">
       {/* Onda de choque infinita */}
       <InfiniteWaveAnimation />
 
@@ -259,6 +298,13 @@ export default function SignalGenerator() {
           >
             Gerar Sinal
           </motion.button>
+
+          {/* Texto adicional se NÃO estiver gerando e NÃO tiver sinal */}
+          {!isGenerating && !showSignal && (
+            <p className="text-sm text-gray-300">
+              Gere um sinal com inteligência artificial
+            </p>
+          )}
 
           {/* Loading */}
           <AnimatePresence>
@@ -457,3 +503,4 @@ function InfiniteWaveAnimation() {
     </div>
   );
 }
+

@@ -77,7 +77,8 @@ export default function NotificationManager() {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
+    // Ajuste para top-4 right-4, para que os pop-ups fiquem visíveis no topo da tela.
+    <div className="fixed top-4 right-4 z-50 flex flex-col items-end space-y-2">
       <AnimatePresence>
         {notifications.map((notif) => (
           <motion.div
@@ -87,11 +88,14 @@ export default function NotificationManager() {
             exit={{ x: 100, opacity: 0, transition: { duration: 0.2 } }}
             className="
               bg-gray-800 
+              bg-opacity-90
               text-white 
               rounded-md 
-              shadow-lg 
-              px-4 py-3 mb-2
+              shadow-xl 
+              px-4 py-3
               w-64
+              border-l-4
+              border-green-500
             "
           >
             {notif.message}
