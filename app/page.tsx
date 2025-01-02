@@ -1,6 +1,6 @@
 // app/page.tsx
 
-import Image from "next/image";
+
 import SignalGenerator from "./components/SignalGenerator";
 import NotificationManager from "./components/NotificationManager";
 
@@ -14,16 +14,9 @@ export default function Home() {
         
         {/* Header com logo central - reduzimos o mb de 2 para 1 */}
         <header className="mb-1">
-          <Image
-            src="/logo.png"
-            alt="Logo Trade AI"
-            width={260}
-            height={260}
-            style={{ objectFit: "cover", objectPosition: "center" }}
-            priority
-          />
+        <img src="/logo.png" alt="Logo" width="260" height="260" style={{ objectFit: "cover", objectPosition: "center" }}/>
         </header>
-
+        
         {/* Grid responsivo - reduzimos gap de 8 para 4, mb-12 para mb-6 */}
         <section
           className="

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { 
   FiClock, 
   FiTrendingUp, 
@@ -43,20 +42,7 @@ function formatTime(secondsTotal: number) {
   return `${mm}:${ss}`;
 }
 
-/* Animação base (fade in up, fade out down) */
-const fadeCardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.5, ease: "easeOut" },
-  },
-  exit: { 
-    opacity: 0, 
-    y: -20, 
-    transition: { duration: 0.3, ease: "easeIn" },
-  },
-};
+
 
 export default function SignalGenerator() {
   // ANIMAÇÃO
@@ -250,15 +236,12 @@ export default function SignalGenerator() {
   );
 
   return (
-    // Removi min-h-[600px] e deixei auto. Assim, se não há sinal, o card fica menor.
     <div className="flex flex-col items-center justify-center w-full relative overflow-hidden">
       {/* Onda de choque infinita */}
       <InfiniteWaveAnimation />
 
       {/* CARD principal */}
-      <motion.div
-        initial={{ scale: 0.95, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1, transition: { duration: 0.5 } }}
+      <div
         className="
           w-full
           bg-gradient-to-tr 
@@ -269,6 +252,7 @@ export default function SignalGenerator() {
           relative
           overflow-hidden
           z-10
+          animate-scaleIn
         "
       >
         {/* Overlay vibrante */}
@@ -280,24 +264,23 @@ export default function SignalGenerator() {
         <div className="relative z-10 flex flex-col items-center space-y-6">
           
           {/* BOTÃO GERAR SINAL */}
-          <motion.button
-            whileHover={{ scale: canGenerate ? 1.05 : 1.0 }}
-            whileTap={{ scale: canGenerate ? 0.95 : 1.0 }}
-            onClick={handleGenerateSignal}
-            disabled={!canGenerate}
-            className={`
-              px-6 py-3 text-lg font-bold rounded-full 
-              transition-colors duration-300
-              shadow-md
-              ${
-                canGenerate
-                  ? "bg-gradient-to-r from-green-400 to-green-600 hover:from-green-300 hover:to-green-500 animate-pulseSignal"
-                  : "bg-gray-500 cursor-not-allowed animate-disabledSignal"
-              }
-            `}
-          >
-            Gerar Sinal
-          </motion.button>
+          <button
+  onClick={handleGenerateSignal}
+  disabled={!canGenerate}
+  className={`
+    px-6 py-3 text-lg font-bold rounded-full 
+    transition-all duration-300
+    shadow-md
+    hover:scale-105 active:scale-95
+    ${
+      canGenerate
+        ? "bg-gradient-to-r from-green-400 to-green-600 hover:from-green-300 hover:to-green-500 animate-pulseSignal"
+        : "bg-gray-500 cursor-not-allowed animate-disabledSignal"
+    }
+  `}
+>
+  Gerar Sinal
+</button>
 
           {/* Texto adicional se NÃO estiver gerando e NÃO tiver sinal */}
           {!isGenerating && !showSignal && (
@@ -307,96 +290,77 @@ export default function SignalGenerator() {
           )}
 
           {/* Loading */}
-          <AnimatePresence>
-            {isGenerating && (
-              <motion.div
-                variants={fadeCardVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                className="flex flex-col items-center space-y-4"
-              >
-                <SingleProgressBar durationSec={8} barColor="#edb300" />
-                <p className="mt-2 text-base text-yellow-200 font-semibold">
-                  {loadingText}
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {isGenerating && (
+            <div
+              className="flex flex-col items-center space-y-4 animate-fadeInUp"
+            >
+              <SingleProgressBar durationSec={8} barColor="#edb300" />
+              <p className="mt-2 text-base text-yellow-200 font-semibold">
+                {loadingText}
+              </p>
+            </div>
+          )}
 
           {/* Dados do Sinal */}
-          <AnimatePresence>
-            {showSignal && !isGenerating && (
-              <motion.div
-                variants={fadeCardVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                className="
-                  bg-[#2c3235] 
-                  bg-opacity-60 
-                  backdrop-blur-sm 
-                  p-4 
-                  rounded-lg 
-                  shadow-inner 
-                  w-full 
-                  max-w-sm 
-                  flex 
-                  flex-col 
-                  space-y-3
-                "
-              >
-                <p className="text-xl font-bold text-[#edb300] mb-2">
-                  Oportunidade encontrada!
-                </p>
+          {showSignal && !isGenerating && (
+            <div
+              className="
+                bg-[#2c3235] 
+                bg-opacity-60 
+                backdrop-blur-sm 
+                p-4 
+                rounded-lg 
+                shadow-inner 
+                w-full 
+                max-w-sm 
+                flex 
+                flex-col 
+                space-y-3
+                animate-fadeInUp
+              "
+            >
+              <p className="text-xl font-bold text-[#edb300] mb-2">
+                Oportunidade encontrada!
+              </p>
 
-                <InfoItem
-                  icon={operationIcon}
-                  label="Operação"
-                  value={operationLabel}
-                />
+              <InfoItem
+                icon={operationIcon}
+                label="Operação"
+                value={operationLabel}
+              />
 
-                <InfoItem 
-                  icon={<FiTarget className="text-green-400 text-xl" />} 
-                  label="Ativo"
-                  value={currentAsset}
-                />
-                <InfoItem
-                  icon={<FiTrendingUp className="text-green-400 text-xl" />}
-                  label="Probabilidade de vitória"
-                  value={`${winRate}%`}
-                />
-                <InfoItem
-                  icon={<FiClock className="text-yellow-300 text-xl" />}
-                  label="Horário de execução"
-                  value={executionTime}
-                />
-                <InfoItem
-                  icon={<FiClock className="text-yellow-300 text-xl" />}
-                  label="Tempo de operação"
-                  value="5 minutos"
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
+              <InfoItem 
+                icon={<FiTarget className="text-green-400 text-xl" />} 
+                label="Ativo"
+                value={currentAsset}
+              />
+              <InfoItem
+                icon={<FiTrendingUp className="text-green-400 text-xl" />}
+                label="Probabilidade de vitória"
+                value={`${winRate}%`}
+              />
+              <InfoItem
+                icon={<FiClock className="text-yellow-300 text-xl" />}
+                label="Horário de execução"
+                value={executionTime}
+              />
+              <InfoItem
+                icon={<FiClock className="text-yellow-300 text-xl" />}
+                label="Tempo de operação"
+                value="5 minutos"
+              />
+            </div>
+          )}
 
           {/* Mensagem de bloqueio */}
-          <AnimatePresence>
-            {!canGenerate && !isGenerating && (
-              <motion.p
-                variants={fadeCardVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                className="text-sm text-gray-300 mt-4"
-              >
-                Você poderá gerar outro sinal em{" "}
-                <b className="text-gray-100">{formatTime(freezeCounter)}</b>.
-              </motion.p>
-            )}
-          </AnimatePresence>
+          {!canGenerate && !isGenerating && (
+            <p className="text-sm text-gray-300 mt-4 animate-fadeInUp">
+              Você poderá gerar outro sinal em{" "}
+              <b className="text-gray-100">{formatTime(freezeCounter)}</b>.
+            </p>
+          )}
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
@@ -503,4 +467,3 @@ function InfiniteWaveAnimation() {
     </div>
   );
 }
-

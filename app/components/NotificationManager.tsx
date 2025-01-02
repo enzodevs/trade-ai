@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Howl } from "howler";
-import { motion, AnimatePresence } from "framer-motion";
 import { sampleUsers } from "./mockData";
 
 // Interface do objeto de notificação
@@ -77,31 +76,24 @@ export default function NotificationManager() {
   };
 
   return (
-    // Ajuste para top-4 right-4, para que os pop-ups fiquem visíveis no topo da tela.
-    <div className="fixed top-4 right-4 z-50 flex flex-col items-end space-y-2">
-      <AnimatePresence>
-        {notifications.map((notif) => (
-          <motion.div
-            key={notif.id}
-            initial={{ x: 100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1, transition: { duration: 0.3 } }}
-            exit={{ x: 100, opacity: 0, transition: { duration: 0.2 } }}
-            className="
-              bg-gray-800 
-              bg-opacity-90
-              text-white 
-              rounded-md 
-              shadow-xl 
-              px-4 py-3
-              w-64
-              border-l-4
-              border-green-500
-            "
-          >
-            {notif.message}
-          </motion.div>
-        ))}
-      </AnimatePresence>
+    <div className="fixed top-4 right-4 z-50">
+      {notifications.map((notification) => (
+        <div
+          key={notification.id}
+          className="
+            bg-green-500 
+            text-white 
+            px-4 
+            py-2 
+            rounded-lg 
+            shadow-lg 
+            mb-2
+            animate-slideIn
+          "
+        >
+          {notification.message}
+        </div>
+      ))}
     </div>
   );
 }
