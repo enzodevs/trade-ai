@@ -38,7 +38,7 @@ export default function Home() {
           {/* Coluna 2: Iframe da Broker */}
           <div className="w-full max-w-md mx-auto">
           <iframe
-            src="https://avalonbroker.com/"
+            src="https://trade.avalonbroker.io/register?aff=420938&aff_model=revenue&afftrack=aitrade"
             className="
               w-full 
               border 

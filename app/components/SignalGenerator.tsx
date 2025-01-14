@@ -17,11 +17,15 @@ import { mockData } from "./mockData";
 function getNextMultipleOf5(date: Date): Date {
   const newDate = new Date(date.getTime());
   const minutes = newDate.getMinutes();
+  const seconds = newDate.getSeconds();
   const remainder = minutes % 5;
 
-  if (remainder !== 0) {
+  if (remainder === 0 && seconds > 0) {
+    newDate.setMinutes(minutes + 5);
+  } else if (remainder !== 0) {
     newDate.setMinutes(minutes + (5 - remainder));
   }
+
   newDate.setSeconds(0);
   newDate.setMilliseconds(0);
   return newDate;
