@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Trade AI - Gerador de Sinais de Operações Binárias
 
-## Getting Started
+<p align="center">
+  <img src="https://i.postimg.cc/y8rmY69S/logo.png" alt="Trade AI Logo" width="400" />
+</p>
 
-First, run the development server:
+Trade AI é um projeto para gerar sinais de operações binárias. Ele fornece informações sobre ativos, probabilidades de vitória, horários de execução e tipos de operações (Call/Put).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Funcionalidades Principais
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Geração de Sinais**: Gera sinais de operações binárias com base em dados simulados.
+- **Horário de Execução**: Calcula o próximo horário de execução com base no tempo atual.
+- **Probabilidade de Vitória**: Exibe a probabilidade de vitória para cada sinal gerado.
+- **Tipo de Operação**: Define se a operação é de compra (Call) ou venda (Put).
+- **Bloqueio Temporário**: Impede a geração de novos sinais por 5 minutos após a geração de um sinal.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Como Usar
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Clonar o Repositório**:
+   ```bash
+   git clone https://github.com/seu-usuario/trade-ai.git
+   cd trade-ai
+   ```
 
-## Learn More
+2. **Instalar Dependências**:
+   ```bash
+   pnpm install
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+3. **Executar o Projeto**:
+   ```bash
+   pnpm dev
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. **Acessar o Projeto**:
+   Abra o navegador e acesse `http://localhost:3000`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Estrutura do Projeto
 
-## Deploy on Vercel
+- **`SignalGenerator.tsx`**: Componente principal que gerencia a geração de sinais e a interface do usuário.
+- **`SingleProgressBar.tsx`**: Componente que exibe uma barra de progresso durante a geração do sinal.
+- **`InfoItem.tsx`**: Componente que exibe informações detalhadas sobre o sinal gerado.
+- **`InfiniteWaveAnimation.tsx`**: Componente que exibe uma animação de onda infinita no fundo da tela.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Tecnologias Utilizadas
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **React**: Biblioteca JavaScript para construção de interfaces de usuário.
+- **TypeScript**: Adiciona tipagem estática ao JavaScript para melhorar a qualidade do código.
+- **Tailwind CSS**: Framework CSS para estilização rápida e responsiva.
+- **Howler.js**: Biblioteca para manipulação de áudio no navegador.
+
+## Contribuição
+
+Contribuições são bem-vindas! Siga os passos abaixo para contribuir:
+
+1. Faça um fork do projeto.
+2. Crie uma nova branch (`git checkout -b feature/nova-feature`).
+3. Commit suas alterações (`git commit -m 'Adiciona nova feature'`).
+4. Faça push para a branch (`git push origin feature/nova-feature`).
+5. Abra um Pull Request.
+
+## Licença
+
+Este projeto está licenciado sob a Licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+---
+
+Desenvolvido por enzodevs (https://github.com/enzodevs).
